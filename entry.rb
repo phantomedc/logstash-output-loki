@@ -5,10 +5,16 @@ module Loki
     class Entry
         include Loki
         attr_reader :labels, :entry
-        def initialize(event,message_field)
+        def initialize(event,message_field,json)
+            line = ""
+            if json
+                line = JSON.generate(event.get(message_field))
+            else
+                line = event.get(message_field).to_s
+            end
             @entry = {
                 "ts" => to_ns(event.get("@timestamp")),
-                "line" => JSON.generate(event.get(message_field))
+                "line" => line
             }
             event = event.clone()
             event.remove(message_field)
