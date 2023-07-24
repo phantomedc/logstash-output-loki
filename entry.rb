@@ -8,7 +8,12 @@ module Loki
         def initialize(event,message_field,json)
             line = ""
             if json
-                line = JSON.generate(event.get(message_field))
+                begin
+                    line = JSON.generate(event.get(message_field))
+                rescue => e
+                    @logger.warn("Error parsing json", :source => message_field, :raw => message_field, :exception => e)
+                    line = event.get(message_field).to_s
+                end
             else
                 line = event.get(message_field).to_s
             end
