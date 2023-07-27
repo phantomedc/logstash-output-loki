@@ -5,14 +5,13 @@ module Loki
     class Entry
         include Loki
         attr_reader :labels, :entry
-        def initialize(event,message_field,json)
+        def initialize(event,message_field,json,logger)
             line = ""
             if json
                 begin
                     line = JSON.generate(event.get(message_field))
                 rescue => e
-                    @logger.warn("Error parsing json", :source => message_field, :raw => message_field, :exception => e)
-                    line = event.get(message_field).to_s
+                    logger.warn("Error parsing json", :source => message_field, :raw => event.get(message_field), :exception => e)
                 end
             else
                 line = event.get(message_field).to_s
