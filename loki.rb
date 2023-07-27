@@ -200,7 +200,7 @@ class LogStash::Outputs::Loki < LogStash::Outputs::Base
   ## Receives logstash events
   public
   def receive(event)
-    @entries << Entry.new(event, @message_field, @json)
+    @entries << Entry.new(event, @message_field, @json, @logger)
   end
 
   def close
